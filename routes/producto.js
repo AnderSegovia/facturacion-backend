@@ -20,4 +20,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+//Ver detalle
+router.get('/:id', async (req, res) => {
+  try {
+    const producto = await Producto.findById(req.params.id);
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' });
+    }
+
+    res.json(producto);
+  } catch (error) {
+    console.error('Error al obtener producto:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
+
 export default router;

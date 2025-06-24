@@ -19,5 +19,20 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+// GET /clientes/:id - Obtener los detalles de un cliente
+router.get('/:id', async (req, res) => {
+  try {
+    const cliente = await Cliente.findById(req.params.id);
+    
+    if (!cliente) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    }
+
+    res.json(cliente);
+  } catch (error) {
+    console.error('Error al obtener cliente por ID:', error);
+    res.status(500).json({ mensaje: 'Error del servidor' });
+  }
+});
 
 export default router;

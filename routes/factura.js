@@ -61,4 +61,22 @@ router.get('/', async (req, res) => {
   res.json(facturas);
 });
 
+//Ver detalles de facturas
+router.get('/:id', async (req, res) => {
+  try {
+    const factura = await Factura.findById(req.params.id)
+      .populate('cliente') // llena los datos del cliente
+      .populate('detalles.producto'); // llena los productos si quieres mostrar el nombre, etc.
+
+    if (!factura) {
+      return res.status(404).json({ mensaje: 'Factura no encontrada' });
+    }
+
+    res.json(factura);
+  } catch (error) {
+    console.error('Error al obtener factura:', error);
+    res.status(500).json({ mensaje: 'Error del servidor al obtener la factura' });
+  }
+});
+
 export default router;

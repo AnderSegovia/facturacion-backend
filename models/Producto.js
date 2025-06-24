@@ -3,14 +3,14 @@ import mongoose from 'mongoose';
 const productoSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   descripcion: String,
-  categoria: { type: String }, // ej: "Luces", "Cascos"
+  categoria: { type: String }, 
   marca: String,
   modelo: String,
-  sku: String, // Código interno o código de barra
+  sku: String, 
   precio_unitario: { type: Number, required: true },
-  precio_venta: Number, // precio con IVA si aplica
+  precio_venta: Number, 
   stock: { type: Number, default: 0 },
-  ubicacion: String, // ej: "Bodega A - Estante 3"
+  ubicacion: String, 
   fecha_ingreso: { type: Date, default: Date.now },
   estado: { type: String, enum: ['activo', 'inactivo'], default: 'activo' }
 });

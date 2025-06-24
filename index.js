@@ -6,8 +6,7 @@ import cors from 'cors';
 import productoRoutes from './routes/producto.js';
 import clienteRoutes from './routes/cliente.js';
 import facturaRoutes from './routes/factura.js';
-
-
+import dashboardRoutes from './routes/dashboard.js';
 
 dotenv.config();
 const app = express();
@@ -20,6 +19,8 @@ app.use(express.json());
 app.use('/api/productos', productoRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/facturas', facturaRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
 
 // Conectar a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)

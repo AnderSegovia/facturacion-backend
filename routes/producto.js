@@ -1,5 +1,7 @@
 import express from 'express';
 import Producto from '../models/Producto.js';
+import Factura from '../models/Factura.js';
+
 
 const router = express.Router();
 
@@ -21,7 +23,7 @@ router.post('/', async (req, res) => {
 });
 
 //Ver detalle
-router.get('/:id', async (req, res) => {
+/*router.get('/:id', async (req, res) => {
   try {
     const producto = await Producto.findById(req.params.id);
 
@@ -32,6 +34,27 @@ router.get('/:id', async (req, res) => {
     res.json(producto);
   } catch (error) {
     console.error('Error al obtener producto:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});*/
+
+router.get('/:id', async (req, res) => {
+  try {
+    const productoId = req.params.id;
+
+    const producto = await Producto.findById(productoId);
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' });
+    }
+
+    const facturas = await Factura.find({ 'detalles.producto': productoId })
+      .populate('cliente', 'nombre') 
+      .select('-__v'); 
+
+    res.json({ producto, facturas });
+
+  } catch (error) {
+    console.error('Error al obtener producto y facturas:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 });

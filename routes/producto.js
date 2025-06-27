@@ -7,9 +7,20 @@ const router = express.Router();
 
 // GET /api/productos
 router.get('/', async (req, res) => {
-  const productos = await Producto.find();
+  const { nombre, categoria, marca, modelo, sku, ubicacion } = req.query;
+  const filtro = {};
+
+  if (nombre) filtro.nombre = new RegExp(nombre, 'i');
+  if (categoria) filtro.categoria = new RegExp(categoria, 'i');
+  if (marca) filtro.marca = new RegExp(marca, 'i');
+  if (modelo) filtro.modelo = new RegExp(modelo, 'i');
+  if (sku) filtro.sku = new RegExp(sku, 'i');
+  if (ubicacion) filtro.ubicacion = new RegExp(ubicacion, 'i');
+
+  const productos = await Producto.find(filtro);
   res.json(productos);
 });
+
 
 // POST /api/productos
 router.post('/', async (req, res) => {

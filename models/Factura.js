@@ -5,6 +5,7 @@ const detalleSchema = new mongoose.Schema({
   descripcion: String,
   cantidad: Number,
   precio_unitario: Number,
+  precio_venta: Number,
   subtotal: Number,
   iva: Number,
   total: Number

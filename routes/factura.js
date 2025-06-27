@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     const detallesCalculados = await Promise.all(
       detalles.map(async (item) => {
         const producto = await Producto.findById(item.producto);
-        const precio = producto.precio_unitario;
+        const precio = producto.precio_venta;
         const cantidad = item.cantidad;
 
         const subtotal = precio * cantidad;
@@ -227,7 +227,7 @@ router.get('/:id/pdf', async (req, res) => {
         .text(detalle.descripcion || detalle.producto.nombre, columns.desc, y, { width: 220 })
         .text(`$${detalle.precio_unitario?.toFixed(2)}`, columns.unit, y)
         .text(`$${detalle.iva?.toFixed(2)}`, columns.iva, y)
-        .text(`$${detalle.total?.toFixed(2)}`, columns.total, y)
+        .text(`$${(detalle.cantidad*detalle.precio_unitario)?.toFixed(2)}`, columns.total, y)
         .moveDown(0.5);
     });
 
@@ -348,7 +348,7 @@ router.get('/:id/ticket', async (req, res) => {
     factura.detalles.forEach((item, index) => {
       doc
         .text(`${index + 1}. ${item.descripcion || item.producto.nombre}`)
-        .text(`   ${item.cantidad} x $${item.precio_unitario.toFixed(2)} = $${item.total.toFixed(2)}`)
+        .text(`   ${item.cantidad} x $${item.precio_unitario.toFixed(2)} = $${(item.cantidad*item.precio_unitario).toFixed(2)}`)
         .moveDown(0.2);
     });
 

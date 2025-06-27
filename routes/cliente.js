@@ -8,12 +8,10 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { nombre, tipo, documento, telefono, estado } = req.query;
-
-    // Construye el objeto de filtros
     const filtro = {};
-
+    
     if (nombre) {
-      filtro.nombre = { $regex: nombre, $options: 'i' }; // búsqueda parcial y case-insensitive
+      filtro.nombre = { $regex: nombre, $options: 'i' }; 
     }
 
     if (tipo) {

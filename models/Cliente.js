@@ -4,8 +4,8 @@ const clienteSchema = new mongoose.Schema({
   nombre: { type: String, required: true },
   tipo: { type: String, enum: ['Consumidor Final', 'Contribuyente'], required: true },
   dui: { type: String },
-  nrc: { type: String }, // solo empresas
-  giro: String, // actividad económica
+  nrc: { type: String }, 
+  giro: String, 
   direccion: String,
   telefono: String,
   correo: String,

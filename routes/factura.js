@@ -7,6 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import QRCode from 'qrcode';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -65,9 +66,55 @@ router.post('/', async (req, res) => {
 
 // Obtener todas las facturas
 router.get('/', async (req, res) => {
-  const facturas = await Factura.find().populate('cliente').populate('detalles.producto');
-  res.json(facturas);
+  try {
+    const { desde, hasta, numero, cliente, tipo, fecha, estado } = req.query;
+
+    const query = {};
+
+    if (numero) {
+      if (mongoose.Types.ObjectId.isValid(numero) && numero.length === 24) {
+        query._id = numero;
+      }
+    }
+
+    if (cliente) {
+      const clientes = await Cliente.find({
+        nombre: { $regex: cliente, $options: 'i' }
+      }).select('_id');
+      query.cliente = { $in: clientes.map(c => c._id) };
+    }
+
+    if (tipo) {
+      query.tipo_documento = tipo;
+    }
+
+    if (desde && hasta) {
+      const fechaInicio = new Date(`${desde}T00:00:00`);
+      const fechaFin = new Date(`${hasta}T23:59:59.999`);
+      query.fecha = { $gte: fechaInicio, $lte: fechaFin };
+    } else if (desde) {
+      const fechaInicio = new Date(`${desde}T00:00:00`);
+      query.fecha = { $gte: fechaInicio };
+    } else if (hasta) {
+      const fechaFin = new Date(`${hasta}T23:59:59.999`);
+      query.fecha = { $lte: fechaFin };
+    }
+
+    if (estado) {
+      query.estado = estado;
+    }
+
+    const facturas = await Factura.find(query)
+      .populate('cliente')
+      .sort({ fecha: -1 });
+
+    res.json(facturas);
+  } catch (error) {
+    console.error('Error obteniendo facturas:', error);
+    res.status(500).json({ mensaje: 'Error interno al obtener facturas' });
+  }
 });
+      
 
 //Ver detalles de facturas
 router.get('/:id', async (req, res) => {
@@ -86,13 +133,13 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ mensaje: 'Error del servidor al obtener la factura' });
   }
 });
+
 function calcularAlturaTicket(factura) {
-  const base = 250; // Altura base mínima (encabezado + cliente)
-  const linea = 20; // Altura promedio por producto
+  const base = 250; 
+  const linea = 20; 
   const totalLineas = factura.detalles.length * linea;
 
-  // Ajuste adicional para totales, QR y firma
-  const extra = 250;
+  const extra = 270;
 
   return base + totalLineas + extra;
 }

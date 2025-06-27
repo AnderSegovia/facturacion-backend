@@ -2,13 +2,46 @@ import express from 'express';
 import Cliente from '../models/Cliente.js';
 import Factura from '../models/Factura.js';
 
-
 const router = express.Router();
 
 // Obtener todos los clientes
 router.get('/', async (req, res) => {
-  const clientes = await Cliente.find();
-  res.json(clientes);
+  try {
+    const { nombre, tipo, documento, telefono, estado } = req.query;
+
+    // Construye el objeto de filtros
+    const filtro = {};
+
+    if (nombre) {
+      filtro.nombre = { $regex: nombre, $options: 'i' }; // búsqueda parcial y case-insensitive
+    }
+
+    if (tipo) {
+      filtro.tipo = tipo;
+    }
+
+    if (documento) {
+      filtro.$or = [
+        { dui: { $regex: documento, $options: 'i' } },
+        { nrc: { $regex: documento, $options: 'i' } },
+      ];
+    }
+
+    if (telefono) {
+      filtro.telefono = { $regex: telefono, $options: 'i' };
+    }
+
+    if (estado) {
+      filtro.estado = estado;
+    }
+
+    const clientes = await Cliente.find(filtro).sort({ nombre: 1 });
+
+    res.json(clientes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener clientes' });
+  }
 });
 
 // Agregar nuevo cliente

@@ -4,7 +4,6 @@ import Producto from '../models/Producto.js';
 import Cliente from '../models/Cliente.js';
 import PDFDocument from 'pdfkit';
 import path from 'path';
-import fs from 'fs';
 import { fileURLToPath } from 'url';
 import QRCode from 'qrcode';
 import mongoose from 'mongoose';
@@ -144,7 +143,7 @@ function calcularAlturaTicket(factura) {
   return base + totalLineas + extra;
 }
 
-//Generar pdf de factura
+//Generar pdf de factura 
 router.get('/:id/pdf', async (req, res) => {
   try {
     const factura = await Factura.findById(req.params.id)
@@ -278,6 +277,7 @@ router.get('/:id/pdf', async (req, res) => {
   }
 });
 
+//Generar ticket de factura
 router.get('/:id/ticket', async (req, res) => {
   try {
     const factura = await Factura.findById(req.params.id)
@@ -296,14 +296,14 @@ router.get('/:id/ticket', async (req, res) => {
     doc.pipe(res);
 
     // === Logo y encabezado empresa ===
-const logoWidth = 80;
-const logoHeight = 60; // ajusta según tu imagen
-const centerLogoX = (doc.page.width - logoWidth) / 2;
+    const logoWidth = 80;
+    const logoHeight = 60; // ajusta según tu imagen
+    const centerLogoX = (doc.page.width - logoWidth) / 2;
 
-doc.image(logoPath, centerLogoX, doc.y, { width: logoWidth });
+    doc.image(logoPath, centerLogoX, doc.y, { width: logoWidth });
 
-// Aumenta manualmente la altura para que el texto no se monte
-doc.y += logoHeight + 20;
+    // Aumenta manualmente la altura para que el texto no se monte
+    doc.y += logoHeight + 20;
 
 
     doc

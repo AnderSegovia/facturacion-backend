@@ -20,12 +20,18 @@ router.post('/', async (req, res) => {
     let totalSinIva = 0;
     let totalIva = 0;
 
-    // Calcular totales
     const detallesCalculados = await Promise.all(
       detalles.map(async (item) => {
         const producto = await Producto.findById(item.producto);
+        if (!producto) throw new Error(`Producto no encontrado: ${item.producto}`);
+
         const precio = producto.precio_venta;
         const cantidad = item.cantidad;
+
+        // Validación: verificar stock disponible
+        if (producto.stock < cantidad) {
+          throw new Error(`Stock insuficiente para el producto: ${producto.nombre}`);
+        }
 
         const subtotal = precio * cantidad;
         const iva = subtotal * 0.13;
@@ -57,11 +63,21 @@ router.post('/', async (req, res) => {
 
     await nuevaFactura.save();
 
+    // 🟡 Descontar stock después de guardar la factura
+    await Promise.all(
+      detallesCalculados.map(async (item) => {
+        await Producto.findByIdAndUpdate(item.producto, {
+          $inc: { stock: -item.cantidad }
+        });
+      })
+    );
+
     res.status(201).json(nuevaFactura);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 // Obtener todas las facturas
 router.get('/', async (req, res) => {

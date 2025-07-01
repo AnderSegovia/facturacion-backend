@@ -129,12 +129,19 @@ router.get('/resumen', async (req, res) => {
         }
       }
     ]);
+    // Productos con bajo stock
+    const stockBajo = await Producto.find({ stock: { $lt: 5 } })
+      .select('nombre')
+      .select('stock')
+      .lean();
+
 
     res.json({
       resumen: { ventasHoy, ventasMes, facturas, clientes },
       ventasDiarias,
       productosTop,
-      clientesTop
+      clientesTop,
+      stockBajo
     });
 
   } catch (error) {

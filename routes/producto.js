@@ -70,4 +70,14 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// routes/productos.js
+router.get('/stock/bajo', async (req, res) => {
+  try {
+    const productos = await Producto.find({ stock: { $lt: 2 } }).select('nombre stock');
+    res.json(productos);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener productos con bajo stock' });
+  }
+});
+
 export default router;

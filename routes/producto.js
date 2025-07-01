@@ -70,14 +70,20 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// routes/productos.js
-router.get('/stock/bajo', async (req, res) => {
-  try {
-    const productos = await Producto.find({ stock: { $lt: 2 } }).select('nombre stock');
-    res.json(productos);
-  } catch (err) {
-    res.status(500).json({ error: 'Error al obtener productos con bajo stock' });
-  }
+// Buscar producto por SKU
+router.get('/sku/:sku', async (req, res) => {
+  const producto = await Producto.findOne({ sku: req.params.sku });
+  if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+  res.json(producto);
 });
+
+// Actualizar stock
+router.put('/:id/stock', async (req, res) => {
+  const { stock } = req.body;
+  const producto = await Producto.findByIdAndUpdate(req.params.id, { stock }, { new: true });
+  if (!producto) return res.status(404).json({ error: 'Producto no encontrado' });
+  res.json(producto);
+});
+  
 
 export default router;

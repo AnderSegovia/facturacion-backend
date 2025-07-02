@@ -2,7 +2,6 @@ import express from 'express';
 import Factura from '../models/Factura.js';
 import Cliente from '../models/Cliente.js';
 import Producto from '../models/Producto.js';
-import mongoose from 'mongoose';
 
 const router = express.Router();
 

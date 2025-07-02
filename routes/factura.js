@@ -12,7 +12,7 @@ const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Crear factura
+// Create
 router.post('/', async (req, res) => {
   try {
     const { cliente, tipo_documento, detalles } = req.body;
@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
 });
 
 
-// Obtener todas las facturas
+// Read
 router.get('/', async (req, res) => {
   try {
     const { desde, hasta, numero, cliente, tipo, fecha, estado } = req.query;
@@ -313,12 +313,11 @@ router.get('/:id/ticket', async (req, res) => {
 
     // === Logo y encabezado empresa ===
     const logoWidth = 80;
-    const logoHeight = 60; // ajusta según tu imagen
+    const logoHeight = 60;
     const centerLogoX = (doc.page.width - logoWidth) / 2;
 
     doc.image(logoPath, centerLogoX, doc.y, { width: logoWidth });
 
-    // Aumenta manualmente la altura para que el texto no se monte
     doc.y += logoHeight + 20;
 
 
@@ -395,7 +394,6 @@ router.get('/:id/ticket', async (req, res) => {
 
     doc.image(qrImageBuffer, centerQrX, doc.y, { width: qrWidth });
 
-    // Sube el puntero Y para que nada lo tape
     doc.y += qrHeight + 10;
 
     // === Frase legal ===

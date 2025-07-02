@@ -24,8 +24,8 @@ app.use('/api/dashboard', dashboardRoutes);
 
 // Conectar a MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('🟢 Conectado a MongoDB Atlas'))
-  .catch((err) => console.error('❌ Error conectando a MongoDB:', err));
+  .then(() => console.log('Conectado a MongoDB Atlas'))
+  .catch((err) => console.error('Error conectando a MongoDB:', err));
 
 // Servidor
 const PORT = process.env.PORT || 3001;

@@ -4,7 +4,7 @@ import Factura from '../models/Factura.js';
 
 const router = express.Router();
 
-// Obtener todos los clientes
+// Read
 router.get('/', async (req, res) => {
   try {
     const { nombre, tipo, documento, telefono, estado } = req.query;
@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Agregar nuevo cliente
+// Create
 router.post('/', async (req, res) => {
   try {
     const nuevo = new Cliente(req.body);
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-// GET /clientes/:id - Obtener los detalles de un cliente
+// Obtener detalles
 router.get('/:id', async (req, res) => {
   try {
     const cliente = await Cliente.findById(req.params.id);

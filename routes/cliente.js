@@ -52,6 +52,7 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 // Obtener detalles
 router.get('/:id', async (req, res) => {
   try {
@@ -66,6 +67,5 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ mensaje: 'Error del servidor' });
   }
 });
-
 
 export default router;

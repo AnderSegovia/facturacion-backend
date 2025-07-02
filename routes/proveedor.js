@@ -17,10 +17,18 @@ router.post('/', async (req, res) => {
 // Read
 router.get('/', async (req, res) => {
   try {
-    const proveedores = await Proveedor.find();
+    const { nombre, estado } = req.query;
+    const filtro = {};
+    
+    if (nombre) {filtro.nombre = { $regex: nombre, $options: 'i' }; }
+
+    if (estado) {filtro.estado = estado;}
+
+    const proveedores = await Proveedor.find(filtro).sort({ nombre: 1 });
     res.json(proveedores);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener clientes' });
   }
 });
 

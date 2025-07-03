@@ -8,6 +8,8 @@ import clienteRoutes from './routes/cliente.js';
 import facturaRoutes from './routes/factura.js';
 import dashboardRoutes from './routes/dashboard.js';
 import proveedorRoutes from './routes/proveedor.js';
+import facturaCompraRoutes from './routes/facturaCompra.js';
+
 
 dotenv.config();
 const app = express();
@@ -22,6 +24,8 @@ app.use('/api/clientes', clienteRoutes);
 app.use('/api/facturas', facturaRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/proveedores', proveedorRoutes);
+app.use('/api/factura-compra', facturaCompraRoutes);
+
 
 
 // Conectar a MongoDB Atlas

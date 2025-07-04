@@ -7,10 +7,38 @@ const router = express.Router();
 // Read
 router.get('/', async (req, res) => {
   try {
-    const facturas = await FacturaCompra.find()
+    const { proveedor, desde, hasta } = req.query;
+    const filtro = {};
+
+    // Filtro por proveedor con validación
+    if (proveedor) {
+      const proveedores = await Proveedor.find({
+        nombre: { $regex: proveedor, $options: 'i' },
+      }).select('_id');
+
+      if (proveedores.length > 0) {
+        filtro.proveedor = { $in: proveedores.map((p) => p._id) };
+      } else {
+        return res.json([]); // No coincidencias = no resultados
+      }
+    }
+
+    // Filtro por fecha con validación
+    if (desde && !isNaN(new Date(desde))) {
+      filtro.fecha = filtro.fecha || {};
+      filtro.fecha.$gte = new Date(desde);
+    }
+    if (hasta && !isNaN(new Date(hasta))) {
+      const fechaHasta = new Date(hasta);
+      fechaHasta.setHours(23, 59, 59, 999);
+      filtro.fecha = filtro.fecha || {};
+      filtro.fecha.$lte = fechaHasta;
+    }
+
+    const facturas = await FacturaCompra.find(filtro)
       .populate('proveedor', 'nombre')
       .populate('detalles.producto', 'nombre sku')
-      .sort({ fecha: -1 }); 
+      .sort({ fecha: -1 });
 
     res.json(facturas);
   } catch (error) {
@@ -18,7 +46,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener historial de compras' });
   }
 });
-
 
 // Look for
 router.get('/sku/:sku', async (req, res) => {

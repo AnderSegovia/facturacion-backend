@@ -78,7 +78,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-
 // Read
 router.get('/', async (req, res) => {
   try {
@@ -130,7 +129,6 @@ router.get('/', async (req, res) => {
   }
 });
       
-
 //Ver detalles de facturas
 router.get('/:id', async (req, res) => {
   try {
@@ -410,6 +408,5 @@ router.get('/:id/ticket', async (req, res) => {
     res.status(500).json({ mensaje: 'Error generando ticket' });
   }
 });
-
 
 export default router;
